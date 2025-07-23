@@ -131,23 +131,23 @@ perform_time = 60 #countdown until check if performing
 
 
 pet = {
-    x: 100,
-    y: 40,
-    tx: random.randint(10,220),
-    ty: random.randint(10,100),
-    spd: random.randint(10,15),
+    "x": 100,
+    "y": 40,
+    "tx": random.randint(10,220),
+    "ty": random.randint(10,100),
+    "spd": random.randint(10,15),
     
-    hunger: random.randint(80,100),
-    energy: random.randint(70,100),
-    fun: 60,
-    age: 0,
+    "hunger": random.randint(80,100),
+    "energy": random.randint(70,100),
+    "fun": 60,
+    "age": 0,
     
-    scale: 4,
+    "scale": 4,
     
-    walking: True,
-    sleeping: False,
-    eating: False,
-    playing: False
+    "walking": True,
+    "sleeping": False,
+    "eating": False,
+    "playing": False
     }
 
 #starting sprite
@@ -166,7 +166,7 @@ while True:
     
     t += 0.25
     if t > 10000:
-        pet[age] += 1
+        pet["age"] += 1
         t=0
     
     # Things that always happen
@@ -176,9 +176,9 @@ while True:
     
     # These stats are always changing no matter what screeen you are on
     # age += 0.00001
-    pet[hunger] -= 0.001
-    pet[energy] -= 0.001
-    pet[fun] -= 0.001
+    pet["hunger"] -= 0.001
+    pet["energy"] -= 0.001
+    pet["fun"] -= 0.001
     
     # Update loop for main screen
     if mode == "main":
@@ -187,21 +187,21 @@ while True:
         # decide if walking
         walk_timer -= 1
         if walk_timer < 0:
-            pet[walking] = random.choice([True, False])
+            pet["walking"] = random.choice([True, False])
             walk_timer = 60
         
-        if pet[walking] == True:
+        if pet["walking"] == True:
             # update pet position and use energy
-            pet[x] += int((pet[tx] - pet[x])/pet[spd])
-            pet[y] += int((pet[ty] - pet[y])/[spd])
-            pet[hunger] -= 0.005
-            pet[energy] -= 0.01
-            pet[fun] -= 0.001
+            pet["x"] += int((pet["tx"] - pet["x"])/pet["spd"])
+            pet["y"] += int((pet["ty"] - pet["y"])/pet["spd"])
+            pet["hunger"] -= 0.005
+            pet["energy"] -= 0.01
+            pet["fun"] -= 0.001
             # choose new move target if close enough
-            if abs(pet[x] - pet[tx])<spd:
-                pet[tx] = random.randint(10,220)
-            if abs(pet[y] - pet[ty])<spd:
-                pet[ty] = random.randint(10,100)
+            if abs(pet["x"] - pet["tx"])<pet["spd"]:
+                pet["tx"] = random.randint(10,220)
+            if abs(pet["y"] - pet["ty"])<pet["spd"]:
+                pet["ty"] = random.randint(10,100)
         """       
         else:
             perform = random.choice([True, False])
@@ -230,9 +230,9 @@ while True:
                 mode = "info"
                 pet_sprt_x = 0
                 pet_sprt_y = 0
-                pet[x] = 130
-                pet[y] = 50
-                pet[scale] = 10
+                pet["x"] = 130
+                pet["y"] = 50
+                pet["scale"] = 10
                 interrupt_flag = 0
                 btn_time = btn_delay
             
@@ -241,9 +241,9 @@ while True:
                     mode = "eating"
                     pet_sprt_x = 0
                     pet_sprt_y = 3
-                    pet[x] = 20
-                    pet[y] = 30
-                    pet[scale] = 10
+                    pet["x"] = 20
+                    pet["y"] = 30
+                    pet["scale"] = 10
                     interrupt_flag = 0
                     btn_time = btn_delay
                 else:
@@ -254,9 +254,9 @@ while True:
                     mode = "sleeping"
                     pet_sprt_x = 0
                     pet_sprt_y = 2
-                    pet[x] = 100
-                    pet[y] = 40
-                    pet[scale] = 10
+                    pet["x"] = 100
+                    pet["y"] = 40
+                    pet["scale"] = 10
                     interrupt_flag = 0
                     btn_time = btn_delay
             
@@ -266,16 +266,16 @@ while True:
                     mode = "main"
                     #pet_sprt_x = 0
                     #pet_sprt_y = 0
-                    #pet[x] = 130
-                    #pet[y] = 50
-                    #pet[scale] = 10
+                    #pet["x"] = 130
+                    #pet["y"] = 50
+                    #pet["scale"] = 10
                     interrupt_flag = 0
                     btn_time = btn_delay
         else:
             interrupt_flag = 0
     
     elif mode == "info":
-        pet[walking] = False
+        pet["walking"] = False
         display.set_backlight(brightness)
         # incrememnt sprite
         pet_sprt_x += 0.2
@@ -284,12 +284,12 @@ while True:
             
         if btn_time < 0:
             if interrupt_flag is 1: #A
-                pet[scale] = 5
+                pet["scale"] = 5
                 mode = "main"
                 interrupt_flag = 0
                 btn_time = btn_delay
             if interrupt_flag is 2: #B
-                pet[scale] = 5
+                pet["scale"] = 5
                 mode = "main"
                 interrupt_flag = 0
                 btn_time = btn_delay
@@ -309,32 +309,32 @@ while True:
             interrupt_flag = 0
     
     elif mode == "eating":
-        pet[walking] = False
+        pet["walking"] = False
         pet_sprt_y = 3
-        if pet[hunger] < 99:
+        if pet["hunger"] < 99:
             pet_sprt_x += 0.15
             if pet_sprt_x > 1:
                 pet_sprt_x = 0
-            pet[hunger] += 1
+            pet["hunger"] += 1
         else:
             walking = True
             pet_sprt_x = 0
             pet_sprt_y = 0
-            pet[scale] = 5
+            pet["scale"] = 5
             mode = "main"
     
     elif mode == "sleeping":
-        pet[walking] = False
+        pet["walking"] = False
         pet_sprt_y = 2
-        if pet[energy] < 99:
+        if pet["energy"] < 99:
             pet_sprt_x += 0.05
             if pet_sprt_x > 1:
                 pet_sprt_x = 0
-            pet[energy] += 1
+            pet["energy"] += 1
         else:
             pet_sprt_x = 0
             pet_sprt_y = 0
-            pet[scale] = 5
+            pet["scale"] = 5
             mode = "main"
             
     elif mode == "fun":
@@ -384,11 +384,11 @@ while True:
         display.sprite(14, 1, 180, 80, 5, BLACK)
     
     if mode == "sleeping":
-        display.sprite(10, 0, pet[x] + 10, y - 20, 5, BLACK)
+        display.sprite(10, 0, pet["x"] + 10, y - 20, 5, BLACK)
     
     #display.sprite(spritesheet_x (0-15), spritesheet_y (0-15), x, y, scale, RGB332transparent_color ) 
     # eg. there are 16 8x8 sprites per 128 lines across, 0 to 15, and 16 down 0 to 15.
-    display.sprite(round(pet_sprt_x), pet_sprt_y, pet[x], pet[y], pet[scale], BLACK)
+    display.sprite(round(pet_sprt_x), pet_sprt_y, pet["x"], pet["y"], pet["scale"], BLACK)
     
     #update screen
     display.update()
@@ -398,12 +398,12 @@ while True:
     if debug == True:
         dbg_time -= 1
         if dbg_time < 0:
-            print("Position:" + str(pet[x]) + "/" + str(pet[y]))
-            print("Target:" + str(pet[tx]) + "/" + str(pet[ty]))
-            print("Hunger:" + str(pet[hunger]))
-            print("Energy:" + str(pet[x]) + "/" + str(pet[y]))
-            print("Walking:" + str(pet[x]) + "/" + str(pet[y]))
-            print("Age:" + str(pet[x]) + "/" + str(pet[y]))
+            print("Position:" + str(pet["x"]) + "/" + str(pet["y"]))
+            print("Target:" + str(pet["tx"]) + "/" + str(pet["ty"]))
+            print("Hunger:" + str(pet["hunger"]))
+            print("Energy:" + str(pet["x"]) + "/" + str(pet["y"]))
+            print("Walking:" + str(pet["x"]) + "/" + str(pet["y"]))
+            print("Age:" + str(pet["x"]) + "/" + str(pet["y"]))
             dbg_time = 10
             
     # interval - 0.1 is planned value
