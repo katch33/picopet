@@ -137,9 +137,9 @@ pet = {
     "ty": random.randint(10,100),
     "spd": random.randint(10,15),
     
-    "hunger": random.randint(80,100),
-    "energy": random.randint(70,100),
-    "fun": 60,
+    "hunger": 50, #random.randint(80,100),
+    "energy": 50, #random.randint(70,100),
+    "fun": 50,
     "age": 0,
     
     "scale": 4,
@@ -237,7 +237,7 @@ while True:
                 btn_time = btn_delay
             
             if interrupt_flag is 2: #B
-                if hunger < 90:
+                if pet["hunger"] < 90:
                     mode = "eating"
                     pet_sprt_x = 0
                     pet_sprt_y = 3
@@ -250,7 +250,7 @@ while True:
                     mode = "main"
             
             if interrupt_flag is 3: #X
-                if energy < 90:
+                if pet["energy"] < 90:
                     mode = "sleeping"
                     pet_sprt_x = 0
                     pet_sprt_y = 2
@@ -261,8 +261,8 @@ while True:
                     btn_time = btn_delay
             
             if interrupt_flag is 4: #Y
-                if fun < 90:
-                    fun += 10
+                if pet["fun"] < 90:
+                    pet["fun"] += 10
                     mode = "main"
                     #pet_sprt_x = 0
                     #pet_sprt_y = 0
@@ -385,7 +385,7 @@ while True:
         display.sprite(14, 1, 180, 80, 5, BLACK)
     
     if mode == "sleeping":
-        display.sprite(10, 0, pet["x"] + 10, y - 20, 5, BLACK)
+        display.sprite(10, 0, pet["x"] + 10, pet["y"] - 20, 5, BLACK)
     
     #display.sprite(spritesheet_x (0-15), spritesheet_y (0-15), x, y, scale, RGB332transparent_color ) 
     # eg. there are 16 8x8 sprites per 128 lines across, 0 to 15, and 16 down 0 to 15.
