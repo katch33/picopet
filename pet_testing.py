@@ -110,6 +110,13 @@ def blink(r, g, b, delay):
     
 def lite(r, g, b):
     led.set_rgb(r, g, b)
+    
+def animate(o):
+    o["frame"] += o["animspd"]
+    if o["frame"] >= len(o["animx"]):
+        o["frame"] = 0
+    round_frame=math.floor(o["frame"])
+    o["sprt"] = o["animx"][round_frame]
 
 # display.set_backlight(x) where x= 0.0 - 1.0
 brightness = 1.0
@@ -129,13 +136,19 @@ btn_delay = 5 # cooldown between button presses
 walk_timer = 60 #countdown until check if walking
 perform_time = 60 #countdown until check if performing
 
+anims = {
+    "walking": [0,1,2,3],
+    "eating": [0,1],
+    "sleeping": [0,1],
+    "playing": [0,1,1,2,2,3,3,4,4,4,3,2,1,0,0]
+    }
 
 pet = {
     "x": 100,
     "y": 40,
     "tx": random.randint(10,220),
     "ty": random.randint(10,100),
-    "spd": random.randint(10,15),
+    "spd": 50, #random.randint(10,15),
     
     "hunger": 50, #random.randint(80,100),
     "energy": 50, #random.randint(70,100),
@@ -147,12 +160,14 @@ pet = {
     "walking": True,
     "sleeping": False,
     "eating": False,
-    "playing": False
+    "playing": False,
+    
+    "animx": anims["walking"],
+    "animy": 0,
+    "animspd": 0.6,
+    "frame": 0,
+    "sprt": 0
     }
-
-#starting sprite
-pet_sprt_x = 0
-pet_sprt_y = 0
 
 
 # setup before main loop
@@ -170,6 +185,8 @@ while True:
         t=0
     
     # Things that always happen
+    animate(pet)
+    
     btn_time -=1
     if btn_time < 0:
         btn_time = -1
@@ -182,6 +199,8 @@ while True:
     
     # Update loop for main screen
     if mode == "main":
+        pet["animx"] = anims["walking"]
+        pet["animy"] = 0
         # UPDATES THAT SHOULD ONLY HAPPEN ON THE MAIN SCREEN SHOULD GO HERE
         
         # decide if walking
@@ -199,7 +218,7 @@ while True:
             pet["fun"] -= 0.001
             # choose new move target if close enough
             if abs(pet["x"] - pet["tx"])<pet["spd"]:
-                pet["tx"] = random.randint(10,220)
+                pet["tx"] = random.randint(40,170)
             if abs(pet["y"] - pet["ty"])<pet["spd"]:
                 pet["ty"] = random.randint(10,100)
         """       
@@ -216,20 +235,12 @@ while True:
                 
                 if perform_time < 0:
                     perform = False
-        """     
-        
-        # TO BE REPLACED WITH ANIMATION FUNCTION
-        pet_sprt_x += 0.40
-        if pet_sprt_x > 3: 
-            pet_sprt_x = 0
-        ########################################
+        """
         
         # button checks for main screen
         if btn_time < 0:
             if interrupt_flag is 1: #A
                 mode = "info"
-                pet_sprt_x = 0
-                pet_sprt_y = 0
                 pet["x"] = 130
                 pet["y"] = 50
                 pet["scale"] = 10
@@ -239,8 +250,6 @@ while True:
             if interrupt_flag is 2: #B
                 if pet["hunger"] < 90:
                     mode = "eating"
-                    pet_sprt_x = 0
-                    pet_sprt_y = 3
                     pet["x"] = 20
                     pet["y"] = 30
                     pet["scale"] = 10
@@ -252,8 +261,6 @@ while True:
             if interrupt_flag is 3: #X
                 if pet["energy"] < 90:
                     mode = "sleeping"
-                    pet_sprt_x = 0
-                    pet_sprt_y = 2
                     pet["x"] = 100
                     pet["y"] = 40
                     pet["scale"] = 10
@@ -278,9 +285,8 @@ while True:
         pet["walking"] = False
         display.set_backlight(brightness)
         # incrememnt sprite
-        pet_sprt_x += 0.2
-        if pet_sprt_x > 1: 
-            pet_sprt_x = 0
+        pet["animx"] = anims["walking"]
+        pet["animy"] = 0
             
         if btn_time < 0:
             if interrupt_flag is 1: #A
@@ -310,30 +316,22 @@ while True:
     
     elif mode == "eating":
         pet["walking"] = False
-        pet_sprt_y = 3
         if pet["hunger"] < 99:
-            pet_sprt_x += 0.15
-            if pet_sprt_x > 1:
-                pet_sprt_x = 0
+            pet["animx"] = anims["eating"]
+            pet["animy"] = 3
             pet["hunger"] += 1
         else:
             walking = True
-            pet_sprt_x = 0
-            pet_sprt_y = 0
             pet["scale"] = 5
             mode = "main"
     
     elif mode == "sleeping":
         pet["walking"] = False
-        pet_sprt_y = 2
         if pet["energy"] < 99:
-            pet_sprt_x += 0.05
-            if pet_sprt_x > 1:
-                pet_sprt_x = 0
+            pet["animx"] = anims["sleeping"]
+            pet["animy"] = 2
             pet["energy"] += 1
         else:
-            pet_sprt_x = 0
-            pet_sprt_y = 0
             pet["scale"] = 5
             mode = "main"
             
@@ -345,22 +343,33 @@ while True:
     # clear the screen to black
     clear(BLACK)
     
+    #display.sprite(spritesheet_x (0-15), spritesheet_y (0-15), x, y, scale, RGB332transparent_color ) 
+    # eg. there are 16 8x8 sprites per 128 lines across, 0 to 15, and 16 down 0 to 15.
+    display.sprite(round(pet["sprt"]), pet["animy"], pet["x"], pet["y"], pet["scale"], BLACK)
+    
     if mode == "main":
         #info on button A
+        display.set_pen(RED)
+        display.rectangle(8, 8, 40, 40)
+        
+        display.set_pen(BLACK)
+        display.rectangle(10, 10, 36, 36)
+        
         display.set_pen(CYAN)
-        display.text("info", 10, 15, scale = 3)
+        display.text("in", 18, 13, scale = 2)
+        display.text("fo", 18, 30, scale = 2)
         # food on button B
         display.set_pen(MAGENTA)
-        display.circle(10+12,100+10,18)
-        display.sprite(12, 0, 10, 100, 3, BLACK)
+        display.circle(10+12 ,100+5, 18)
+        display.sprite(11, 0, 10, 95, 3, BLACK)
         # bed on button X
         display.set_pen(BLUE)
-        display.circle(190+21,5+25,22)
-        display.sprite(13, 0, 190, 5, 5, BLACK)
+        display.circle(190+24, 5+25, 18)
+        display.sprite(12, 0, 197, 7, 4, BLACK)
         # fun on button Y
-        display.set_pen(WHITE)
-        display.text("fun +10", 150, 100, scale = 3)
-        #display.sprite(?, 0, 190, 100, 3, BLACK)
+        display.set_pen(RED)
+        display.circle(190+24, 5+100, 18)
+        display.sprite(12, 1, 204, 95, 3, BLACK)
     
     if mode == "info":
         display.set_pen(CYAN)
@@ -387,10 +396,6 @@ while True:
     if mode == "sleeping":
         display.sprite(10, 0, pet["x"] + 10, pet["y"] - 20, 5, BLACK)
     
-    #display.sprite(spritesheet_x (0-15), spritesheet_y (0-15), x, y, scale, RGB332transparent_color ) 
-    # eg. there are 16 8x8 sprites per 128 lines across, 0 to 15, and 16 down 0 to 15.
-    display.sprite(round(pet_sprt_x), pet_sprt_y, pet["x"], pet["y"], pet["scale"], BLACK)
-    
     #update screen
     display.update()
     
@@ -409,4 +414,5 @@ while True:
             
     # interval - 0.1 is planned value
     time.sleep(0.1)
+
 
