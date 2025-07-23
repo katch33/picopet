@@ -364,15 +364,16 @@ while True:
     
     if mode == "info":
         display.set_pen(CYAN)
-        display.text("Hunger: " + str(round(hunger)), 10, 10, scale = 3)
+        display.text("Hunger: " + str(round(pet["hunger"])), 10, 10, scale = 3)
         display.set_pen(ORANGE)
-        display.text("Energy: " + str(round(energy)), 10, 45, scale = 3)
+        display.text("Energy: " + str(round(pet["energy"])), 10, 45, scale = 3)
         display.set_pen(GREEN)
-        display.text("Fun: " + str(round(fun)), 10, 80, scale = 3)
+        display.text("Fun: " + str(round(pet["fun"])), 10, 80, scale = 3)
         display.set_pen(WHITE)
-        display.text("Age: " + str(round(age)), 10, 110, scale = 3)
+        display.text("Age: " + str(round(pet["age"])), 10, 110, scale = 3)
         display.set_pen(YELLOW)
         display.text("+", 220, 8, scale = 5)
+        # PUT A SPRITE FOR BRIGHTNESS HERE
         display.text("-", 220, 80, scale = 5)
         display.text(str(brightness), 200, 50, scale = 2)
         
